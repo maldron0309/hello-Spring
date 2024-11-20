@@ -1,8 +1,10 @@
 package hello.hellospring.repository;
 
 import hello.hellospring.domain.Member;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,6 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MemoryMemberRepositoryTest {
 
     MemoryMemberRepository memoryMemberRepository = new MemoryMemberRepository();
+
+    @AfterEach
+    public void afterEach() {
+        memoryMemberRepository.clearStore();
+    }
 
     @Test
     public void save() {
@@ -42,4 +49,21 @@ public class MemoryMemberRepositoryTest {
         Member result = memoryMemberRepository.findByName("spring1").get(); // spring1 이라는 회원을 찾음
         assertThat(result).isEqualTo(member1); // 찾은 회원이 member1과 동일한지 확인
     }
+
+    @Test
+    public void findAll() {
+        Member member1 = new Member();
+        member1.setName("spring1");
+        memoryMemberRepository.save(member1);
+
+        Member member2 = new Member();
+        member2.setName("spring2");
+        memoryMemberRepository.save(member2);
+
+        List<Member> result = memoryMemberRepository.findAll();
+        assertThat(result.size()).isEqualTo(2);
+    }
+
 }
+
+
